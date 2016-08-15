@@ -17,7 +17,7 @@ You know that expression "you know so little that you don't even know what you d
 ## Mobile Hub
 To help mobile developers in my situation, AWS created a service called Mobile Hub. You'll find it tucked away here on the right side:
 
-![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/1.png "Mobile Hub")
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/2.png "Mobile Hub")
 
 I have mixed feelings about the Mobile Hub. Like any wizard, it hides the reality of what it's really doing to make things easier. At first this is great, because it gives you a starting point. However, I found that pretty quickly it was just confusing me more, because I needed to know what was really happening. The most useful thing about the Mobile Hub is that it bridges the gap between what you want to accomplish and knowing where in the AWS console to do it.
 
