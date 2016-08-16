@@ -21,7 +21,9 @@ To help mobile developers in my situation, AWS created a service called Mobile H
 
 It's kind of misleading to call Mobile Hub a "service," because it's really just a wizard that creates things for you within the other AWS services, like tables in DynamoDB or User Pools in Cognito. I have mixed feelings about the Mobile Hub. Like any wizard, it hides the reality of what it's really doing to make things easier. At first this is great, because it gives you a starting point. However, I found that pretty quickly it was just confusing me more, because I needed to know what was really happening, and didn't realize that it's not a self-contained service, but rather is reaching out to DynamoDB and Cognito and creating things in them. Once you know this, it's much more clear, but it's not at all obvious. The most useful thing about the Mobile Hub is that it bridges the gap between what you want to accomplish and knowing where in the AWS console to do it.
 
-To explain better, I'll show you what happens when you click on the Mobile Hub for the first time. You're asked to grant permissions to the Mobile Hub:
+The Mobile Hub also does something which is a pretty impressive trick--it creates a sample Swift project that does the things you requested it to. Unfortunately, I didn't find the sample project that helpful, because it accomplishes things differently than many of the code samples I found on the web, plus it didn't have the current version of the Facebook SDK when I tested it. In other words, it had references to the Facebook SDK's files that were out of date compared to the SDK files you get when you go directly to Facebook and download them there. I found it easier in the long run to accomplish things piece by piece--first by figuring out how to log in to Facebook using Facebook's SDK, then figuring out how to pass the Facebook token to Cognito, then figuring out how to write to a DynamoDB tabe.
+
+To give an example of how the Mobile Hub creates items in the AWS console, I'll show you what happens when you click on the Mobile Hub for the first time. You're asked to grant permissions to the Mobile Hub:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/3.png "Permissions")
 
@@ -41,4 +43,8 @@ it has created a new Role called "MobileHub_Service_Role":
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/7.png "Role")
 
-The "Identity & Access Management" service is usually abbreviated "IAM" in most of the AWS documentation, which is confusing because the term IAM doesn't appear anywhere on the AWS console. For a while I didn't even realize you could get to it from the AWS console, and always resorted to Googling the terms "AWS IAM Console" to get a link to it. The IAM service is hugely important to everything I do for my mobile app, but very different from anything I'd encountered before so I took a while to understand it at all. I'll talk about it more later on, but remember that IAM is crucial for making things work right.
+The "Identity & Access Management" service is usually abbreviated "IAM" in most of the AWS documentation, which is confusing because the term IAM doesn't appear anywhere on the AWS console. For a while I didn't even realize you could get to it from the AWS console, and always resorted to Googling the terms "AWS IAM Console" to get a link to it. 
+
+The IAM service is hugely important to everything I do for my mobile app, but very different from anything I'd encountered before so I took a while to understand it at all. I'll talk about it more later on, but remember that IAM is crucial for making things work right.
+
+(not finished yet--work in progress)
