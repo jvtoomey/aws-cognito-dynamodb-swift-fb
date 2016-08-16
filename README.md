@@ -47,4 +47,35 @@ The "Identity & Access Management" service is usually abbreviated "IAM" in most 
 
 The IAM service is hugely important to everything I do for my mobile app, but very different from anything I'd encountered before so I took a while to understand it at all. I'll talk about it more later on, but remember that IAM is crucial for making things work right.
 
-(not finished yet--work in progress)
+## Creating a new Mobile Hub app
+
+Here's what happens when you create a new app using the Mobile Hub. Start by giving it a name:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/8.png "New project")
+
+This screen appears, 
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/9.png "Mobile Hub options")
+
+which lets you choose the features that you want your app to have. The fine print at the bottom of each button tells you which AWS service it will create items in. For example, in my app I want users to log in with Facebook, then use that authentication in AWS to save records to a table, so I will be using the "User Sign-in" and the "NoSQL Database" buttons. Since these buttons say they're powered by "AWS Cognito" and "AWS DynamoDB," what's really going to happen is the Mobile Hub wizard is going to create items in these 2 services on my behalf.
+
+I'm going to start by clicking the User Sign-in button:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/10.png "User sign-in")
+
+I'm given choices about how I want my users to log in. For my app, I want users to log in if they want to save items, but I also want them to be able to search for items without necessarily needing to be logged in, so I'm choosing "sign-in is optional":
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/11.png "Log-in choices")
+
+I want to use Facebook as the log-in choice, so I click Facebook. Note how it asks for the Facebook App ID.
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/12.png "Adding Facebook login")
+
+You need to create a Facebook App ID on the Facebook developer's page, not anywhere in AWS. This isn't something the Mobile Hub (or AWS, for that matter) can do for you--instead, you have to go to https://developers.facebook.com/ and click the "Add a New App" button over there:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/13.png "Add Facebook app")
+
+It'll ask what platform you're using. I'm using iOS so I click that:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/14.png "App type")
+
