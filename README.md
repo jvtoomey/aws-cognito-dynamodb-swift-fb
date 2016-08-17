@@ -21,7 +21,7 @@ To help mobile developers in my situation, AWS created a service called Mobile H
 
 It's kind of misleading to call Mobile Hub a "service," because it's really just a wizard that creates things for you within the other AWS services, like tables in DynamoDB or User Pools in Cognito. I have mixed feelings about the Mobile Hub. Like any wizard, it hides the reality of what it's really doing to make things easier. At first this is great, because it gives you a starting point. However, I found that pretty quickly it was just confusing me more, because I needed to know what was really happening, and didn't realize that it's not a self-contained service, but rather is reaching out to DynamoDB and Cognito and creating things in them. Once you know this, it's much more clear, but it's not at all obvious. The most useful thing about the Mobile Hub is that it bridges the gap between what you want to accomplish and knowing where in the AWS console to do it.
 
-The Mobile Hub also does something which is a pretty impressive trick--it creates a sample Swift project that does the things you requested it to. Unfortunately, I didn't find the sample project that helpful, because it accomplishes things differently than many of the code samples I found on the web, plus it didn't have the current version of the Facebook SDK when I tested it. In other words, it had references to the Facebook SDK's files that were out of date compared to the SDK files you get when you go directly to Facebook and download them there. I found it easier in the long run to accomplish things piece by piece--first by figuring out how to log in to Facebook using Facebook's SDK, then figuring out how to pass the Facebook token to Cognito, then figuring out how to write to a DynamoDB tabe.
+The Mobile Hub also does something which is a pretty impressive trick--it creates a sample Swift project that uses the AWS services like Cognito and DynamoDB that the Mobile Hub invisibly set up for you. Unfortunately, I didn't find the sample project that helpful, because it accomplishes things differently than many of the code samples I found on the web, plus it didn't have the current version of the Facebook SDK when I tested it. In other words, it had references to the Facebook SDK's files that were out of date compared to the SDK files you get when you go directly to Facebook and download them there. I found it easier in the long run to accomplish things piece by piece--first by figuring out how to log in to Facebook using Facebook's SDK, then figuring out how to pass the Facebook token to Cognito, then figuring out how to write to a DynamoDB tabe.
 
 To give an example of how the Mobile Hub creates items in the AWS console, I'll show you what happens when you click on the Mobile Hub for the first time. You're asked to grant permissions to the Mobile Hub:
 
@@ -49,7 +49,7 @@ The IAM service is hugely important to everything I do for my mobile app, but ve
 
 ## Creating a new Mobile Hub app
 
-Here's what happens when you create a new app using the Mobile Hub. Start by giving it a name:
+Even though I still feel in the long run you're better off without the Mobile Hub, it's useful when you're completely new to AWS because it shows you where in the AWS console to set up services. I'll show you what happens when you create a new app using the Mobile Hub. Start by giving it a name:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/8.png "New project")
 
@@ -71,7 +71,13 @@ I want to use Facebook as the log-in choice, so I click Facebook. Note how it as
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/12.png "Adding Facebook login")
 
-You need to create a Facebook App ID on the Facebook developer's page, not anywhere in AWS. This isn't something the Mobile Hub (or AWS, for that matter) can do for you--instead, you have to go to https://developers.facebook.com/ and click the "Add a New App" button over there:
+## Creating a Facebook App ID
+
+You need to create a Facebook App ID on the Facebook developer's page, not anywhere in AWS. This isn't something the Mobile Hub (or AWS, for that matter) can do for you--instead, you have to go to 
+
+https://developers.facebook.com/ 
+
+and click the "Add a New App" link over there:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/13.png "Add Facebook app")
 
@@ -79,3 +85,47 @@ It'll ask what platform you're using. I'm using iOS so I click that:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/14.png "App type")
 
+Give the app any name you want. It doesn't need to match your AWS Mobile Hub project name. *You can't give it a name that uses "Facebook" or "fb" or any name that Facebook deems too similar to their own. If you try it, it will stop you.*
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/15.png "App name")
+
+Give it a category and a contact email:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/16.png "Email")
+
+Pass the CAPTCHA:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/17.png "CAPTCHA")
+
+Download the SDK:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/18.png "SDK")
+
+This is the app ID that you will need to put in the AWS console. You will also need to put this in your app's info.plist. I'll show that later:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/19.png "App ID")
+
+Now that you have the Facebook App ID, you don't really need to come back here.
+
+## Connecting the Facebook App and AWS
+
+In the AWS console, paste the Facebook App ID and click the "Save Changes" button:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/20.png "Paste App ID")
+
+It should tell you that the changes have been saved. Now click "Configure more features":
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/21.png "More features")
+
+Note how the User Sign-In shows you the green checkmark that it's been configured: 
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/22.png "More features")
+
+Now, what really just happened is that the Mobile Hub has gone to the Cognito service and added some settings for us. To explore these, go to the AWS console and click on Cognito:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/23.png "Cognito")
+
+## Cognito
+
+
+(work in progress, not complete yet)
