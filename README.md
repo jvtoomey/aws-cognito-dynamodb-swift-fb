@@ -123,9 +123,17 @@ Note how the User Sign-In shows you the green checkmark that it's been configure
 
 Now, what really just happened is that the Mobile Hub has gone to the Cognito service and added some settings for us. To explore these, go to the AWS console and click on Cognito:
 
-![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/23.png "Cognito")
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/23.png "Click on Cognito")
 
 ## Cognito
 
+Cognito has 2 different ways to handle logins, as you can see from the picture below:
+
+* User Pools
+* Identity Pools (labeled as "Federated Identities" on the button)
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/24.png "Cognito screen")
+
+Part of what makes Cognito confusing in my opinion is the user interface, starting with the wording on those first buttons. By not using the word "pool," on both buttons, it seems to imply that they're completely different things. Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
 
 (work in progress, not complete yet)
