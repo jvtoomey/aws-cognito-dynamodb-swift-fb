@@ -160,13 +160,16 @@ Now click the link waaaaaaay over on the far right to edit the pool (another con
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/27.png "Edit pool")
 
-You'll see lots of info about the identity pool:
+You'll see lots of info about the identity pool. The roles are very important to understand, but we'll talk about those in a moment. For now, let's expand the "Unauthenticated identities" section:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/28.png "Identity pool settings")
 
--show how it allows anonymous access (and this goes away when you make the login mandatory)
--explain the unauth and auth roles, and show those on the IAM screen
+Note how there's a checkmark next to "Enable access to unauthenticated identities". If you switch over to the Mobile Hub and change the sign-in from optional to required and save the change, then return to the identity pool and refresh the page, notice that it removed both the checkmark and the unauthenticated role:
 
+| ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/29.png "Change setting") | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/30.png "Note changes in pool") |
+| __When you remove the optional sign-in from the Mobile Hub...__ | __...it removes the unauthenticated sign-in from the identity pool.__ |
+
+-explain the unauth and auth roles, and show those on the IAM screen
 
 Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
 
