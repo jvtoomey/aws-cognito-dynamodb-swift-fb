@@ -243,10 +243,78 @@ Click to "Enable NoSQL", then "Add a new table":
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/39.png "DynamoDB")
 
+I'm choosing "Protected" because it has what I need for this table (ie, "Any app user can read, only owner can write to item").
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/40.png "Setting up table")
+
+By default it gives it a userId attribute and sets it as the partition key. What is a partition key? I'll do my best to explain.
+
+Coming from a relational database background, it's hard to get my head around the DynamoDB table concept. Part of the problem for me, I think, is that they say they're not the same as relational database tables and there's no such thing as a column, but then their UI presents the data in rows and columns (I'll show that in a picture later), plus their use of the name "table" itself implies a similarity. 
+
+Regarding a partition key, it has to do with how the table divides its records in order to store them. To quote from Amazon's documentation at http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GuidelinesForTables.html:
+
+> The primary key uniquely identifies each item in a table. The primary key can be simple (partition key) or composite (partition key and sort key).
+When it stores data, DynamoDB divides a table's items into multiple partitions, and distributes the data primarily based upon the partition key value. The provisioned throughput associated with a table is also divided evenly among the partitions, with no sharing of provisioned throughput across partitions.
+Total Provisioned Throughput / Partitions = Throughput Per Partition
+Consequently, to achieve the full amount of request throughput you have provisioned for a table, keep your workload spread evenly across the partition key values. Distributing requests across partition key values distributes the requests across partitions.
+For example, if a table has a very small number of heavily accessed partition key values, possibly even a single very heavily used partition key value, request traffic is concentrated on a small number of partitions – potentially only one partition. If the workload is heavily unbalanced, meaning that it is disproportionately focused on one or a few partitions, the requests will not achieve the overall provisioned throughput level. To get the most out of DynamoDB throughput, create tables where the partition key has a large number of distinct values, and values are requested fairly uniformly, as randomly as possible. 
+
+They also provide this table to give an idea of the key to choose:
+
+| Partition key value	| Uniformity |
+| ------------------- | --------- |
+| User ID, where the application has many users. | Good |
+| Status code, where there are only a few possible status codes.	| Bad |
+| Item creation date, rounded to the nearest time period (e.g. day, hour, minute)	| Bad |
+| Device ID, where each device accesses data at relatively similar intervals | Good |
+| Device ID, where even if there are a lot of devices being tracked, one is by far more popular than all the others. | Bad |
+
+It makes sense after reading this why they default the table to having userId as the partion key, because it seems like by far the best and easiest key to use. Beyond this, though, my relational-db habits start kicking in as I start trying to design these tables the way I usually do. Here are some pointers I gradually figured out through reading and trial-and-error:
+
+* The primary key can have at most 2 fields. If we're using the userId as the partition key, we're almost certainly going to need another field in the primary key, and the only field left is the sort key. You can't have a 3+ field composite key like a relational db table.
+* There's no auto-incrementing field, so if you're going to make that sort key a unique identifier, a common practice seems to be to use a UUID (Universally Unique Identifier) in that sort key.
+* A consequence of the 2-field primary key limit is that you forget about trying to design the table around a clustered index, but instead add indexes to make the searches faster depending on how you're going to be querying.
+* Once you have created a table, you cannot change the primary key field(s) in any way. They are set in stone.
+* The additional "fields" that you add in the Mobile Hub (like firstName in my example), aren't even really added to the table's design in any way, unless they're used in an index. This is an example where the Mobile Hub really misled my understanding of how DynamoDB tables really work. It's really more like a Javascript object, where you can add name/value pairs (probably a bad analogy but I'm trying to describe how each record can have zero or more values, whereas a relational database's record will have all the fields that are defined as columns on that table).
+
+For simplicity's sake in the MyFriends example table I have, I'm going to use the last name as the sort key, but in real life this would never work, because each user can only have one record with that last name (because the primary key consists of userId and lastName), eliminating the ability to add more than one person with the same last name.
+
+Notice how it gives you examples showing what kinds of queries will work on this table. If we wanted the ability to quickly sort and search on the first name, we would need to add an index on that field.
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/41.png "Setting up table")
+
+Let's switch over to the DynamoDB service by clicking on its icon in the AWS console:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/42.png "DynamoDB")
+
+We can see that the Mobile Hub has automatically created a table for us, once again giving it an auto-generated name that contains the name we specified in Mobile Hub:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/43.png "DynamoDB Table list")
+
+Click on the table to the various information about the table. Note that lastName is nowhere to be seen. I think that MobileHub lets you add it primarily so it can show you in its sample code how you would write to the field. To me, though, coming from a relational db background, it just confused me that the actual DynamoDB table didn't have the fields that I had set up in Mobile Hub. 
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/44.png "DynamoDB Table list")
+
+You can add records (or "items", as they're move precisely called in DynamoDB's terminology) by clicking the Create Item button and typing in values:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/45.png "Add item")
+
+The new item appears in the table onscreen:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/46.png "New item")
+
+Here's another of my UI-gripes. You can add additional attributes to an item, and when you view them altogether, it looks just like a traditional relational table with rows and columns:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/47.png "Items")
+
+If this were a relational table, those blanks in each record would be nulls in those fields. However, with DynamoDB, those blanks literally don't exist on those items, as you can see when you click on each of them. One item has 2 attributes, one has 3, and another has 3 but the 3rd attribute is different:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/48.png "items with attributes")
 
 (Show how a DynamoDB's table permissions seem like they're set on the table, but they're actually set in IAM)
 
+(Explain how DynamoDB tables aren't like relational db tables that have fixed columns) 
 
-Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
+(Here's another confusing thing :Show how the "create new" buttons are different on each screen)
 
 (work in progress, not complete yet)
