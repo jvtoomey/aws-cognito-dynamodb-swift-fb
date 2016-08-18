@@ -168,7 +168,7 @@ Note how there's a checkmark next to "Enable access to unauthenticated identitie
 
 | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/29.png "Change setting") | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/30.png "Note changes in pool") |
 | :---: | :---: |
-| __When you remove the optional sign-in from the Mobile Hub...__ | __...it removes the unauthenticated sign-in from the identity pool.__ |
+| __When you remove the optional sign-in from the Mobile Hub by changing it to "Sign-in is required"...__ | __...it removes the unauthenticated sign-in from the identity pool.__ |
 
 -explain the unauth and auth roles, and show those on the IAM screen
 
