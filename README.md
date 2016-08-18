@@ -134,7 +134,7 @@ Cognito has 2 different ways to handle logins, as you can see from the picture b
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/24.png "Cognito screen")
 
-Part of what makes Cognito confusing in my opinion is the user interface, starting with the wording on those first buttons. By not using the word "pool" on both buttons, it seems to imply that they're completely different things. Also, I noticed that much of the AWS documentation uses the term "identity pool," not "federated identity pool" so it seems to be their preferred term once you get beyond this initial button.
+Part of what makes Cognito confusing in my opinion is the user interface, starting with the wording on those first buttons. By not using the word "pool" on both buttons, it seems to imply that they're completely different things. Interestingly, I noticed that much of the AWS documentation uses the term "identity pool," not "federated identity," so it does seem to be their preferred term once you get beyond this initial button.
 
 Okay, so here's my understanding of these 2 types of authentication pools:
 
@@ -148,8 +148,22 @@ To quote Wikipedia:
 
 Remember back on the Mobile Hub screen when I supplied my Facebook App ID and told it that I'd like my app to have Facebook as a log-in option, but for it not to be required? Here's a good example of what the Mobile Hub is *really* doing behind the scenes when you choose this option. If I open Cognito, then click the "Manage Federated Identities" button, note that there is a identity pool there:
 
--show pic of the new federated identity
--show how you can rename it b/c name doesn't really matter, except that the mobile hub loses its connection to it (maybe? test this...)
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/25.png "Identity pool")
+
+It has an auto-generated name, but it's pretty apparent that the name derives from the Mobile Hub app that I created: It begins with a lower-case version of the name "TestThisGizmo," then "_MOBILEHUB_", then a unique ID number. For curiosity's sake I renamed this identity pool to see what would happen, and AWS changed the name right back, but it did cause a problem with a role that became disconnected, so it's best to leave the name alone.
+
+I found the Mobile Hub helpful at this point because it helped me to understand better some of the settings in the identity pool. If you look at the Mobile Hub's setting on an earlier picture, you can see that I had chosen "Sign-in is optional." Let's open the identity pool to see what it looks like. Begin by clicking on the identity pool's name:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/26.png "Click on name")
+
+Now click the link waaaaaaay over on the far right to edit the pool (another confusing UI design! it took me a while to figure out how to edit the pool):
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/27.png "Edit pool")
+
+You'll see lots of info about the identity pool:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/28.png "Identity pool settings")
+
 -show how it allows anonymous access (and this goes away when you make the login mandatory)
 -explain the unauth and auth roles, and show those on the IAM screen
 
