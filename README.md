@@ -170,7 +170,82 @@ Note how there's a checkmark next to "Enable access to unauthenticated identitie
 | :---: | :---: |
 | __When you remove the optional sign-in from the Mobile Hub by changing it to "Sign-in is required"...__ | __...it removes the unauthenticated sign-in from the identity pool.__ |
 
--explain the unauth and auth roles, and show those on the IAM screen
+This illustrates how the Mobile Hub provides a more user-friendly way to understand the proper configuration of an identity pool. Everything we do in the Mobile Hub is really just translated to a setting in one of the AWS services. The Facebook App ID is here too:
+
+| ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/31.png "Mobile Hub FB ID") | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/32.png "Cognito FB ID") |
+| :---: | :---: |
+| __The Facebook App ID set in the Mobile Hub...__ | __...is put here in the identity pool automatically.__ |
+
+## Roles
+
+Understanding the "role of roles", so to speak, in AWS is crucial to everything you do, because they control how much access users have. If your roles aren't set up correctly, you can accidentally give users too much access and they can edit someone else's records, or you can prevent users from logging in at all even though you want them to.
+
+They're actually pretty neat in how they work, but for me they're so radically different from anything I've encountered before that it took a while just to understand the basics (and I know that I'm barely scratching the surface even with what little I do know).
+
+The biggest difference is that you create them using a markup language, rather than using a GUI or typing a command. The AWS console uses a point-and-click web interface for most of your interactions with it, and the roles seem to be this way too, until all of a sudden you're told to copy-and-paste a big JSON-looking block of text and "add a policy variable like so":
+
+` "Condition": {"StringLike": {"s3:prefix": ["David/*"]}} `
+
+With SQLServer, you set permissions with a point-and-click GUI:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/33.png "sqlserver")
+
+With MySql (or SQLServer too), you might set permissions by typing commands:
+
+`GRANT ALL ON mydb.mytbl TO 'someuser'@'somehost';`
+
+With the AWS console, whether you're setting login permissions, or setting read/write/delete permissions on a DynamoDB table, you're going to do it by editing these blocks of markup language.
+
+Getting back to our Mobile Hub example, we can see that in addition to creating the identity pool, it created roles for the authorized user and the unauthorized user:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/34.png "roles")
+
+We can see these roles by going back to the "Identity & Access Management" (aka IAM) service:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/6.png "IAM")
+
+Remember when we first created the Mobile Hub project that it automatically created a role named "MobileHub_Service_Role"? Well, now it has created 2 additional roles:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/35.png "roles")
+
+Similar to how it autonamed the identity pool, AWS provided names that make the roles' purpose clear:
+1) The "...auth..." role will be the one applied when a user has authenticated, 
+and
+2) The "...unauth..." role will be to users who haven't authenticated.
+
+It's not the name that matters; the roles don't need the words "auth" and "unauth" in them (AWS just auto-applied those names to make them clearer to us, but you could choose any name you want if you're creating your own). The important thing is the mapping of the role names in the identity pool, as shown a couple of pictures earlier.
+
+To see what the language in the role consists of, click on the role name to open it (another confusing UI design--there's no visible button/link/etc to click on). Here I'm viewing the "auth" role. The role actually can hold multiple policies. Each policy holds one complete unit of the markup language. Click on the "Edit policy" link as shown below:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/36.png "Edit policy")
+
+This shows us the actual text of the policy:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/37.png "Policy text")
+
+There's not much to this policy. It's pretty clear that it's allowing the user to call Cognito's GetId function in order to get a Cognito ID. You can read about the function here:
+
+http://docs.aws.amazon.com/cognitoidentity/latest/APIReference/API_GetId.html
+
+Interestingly, if you look at the "unauth" role, you'll see that it has the exact same policy as the "auth" role, but this makes sense because we set the Mobile Hub app to make log-ins optional, so unauthenticated users are allowed to use our AWS resources also.
+
+The roles and their policies get more complex when we get DynamoDB involved, which is good because they give us a chance to see how to restrict a user's permissions and only allow them to do certain things.
+
+## DynamoDB
+
+The main feature of my app will be the ability to write data to a DynamoDB table and be able to read other users' data. Users should be able to read anyone's data, but only edit their own records.
+
+Back in the Mobile Hub, there was another feature called NoSQL Database. Let's click on that one:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/38.png "DynamoDB")
+
+Click to "Enable NoSQL", then "Add a new table":
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/39.png "DynamoDB")
+
+
+(Show how a DynamoDB's table permissions seem like they're set on the table, but they're actually set in IAM)
+
 
 Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
 
