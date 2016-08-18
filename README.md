@@ -134,6 +134,26 @@ Cognito has 2 different ways to handle logins, as you can see from the picture b
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/24.png "Cognito screen")
 
-Part of what makes Cognito confusing in my opinion is the user interface, starting with the wording on those first buttons. By not using the word "pool," on both buttons, it seems to imply that they're completely different things. Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
+Part of what makes Cognito confusing in my opinion is the user interface, starting with the wording on those first buttons. By not using the word "pool" on both buttons, it seems to imply that they're completely different things. Also, I noticed that much of the AWS documentation uses the term "identity pool," not "federated identity pool" so it seems to be their preferred term once you get beyond this initial button.
+
+Okay, so here's my understanding of these 2 types of authentication pools:
+
+1) __User Pools__: You use these when you want the person to create an account that is stored at Amazon. It's not the same as an Amazon.com account that they might use to order books or jump ropes. Rather, this is an account that will be created specifically for any AWS services that you are providing them to use. The nice thing about these user pools is that AWS enforces the password rules and account resets for you. I'll show a picture below with more detail. 
+
+2) __Identity Pools (aka Federated Identities)__: You use these pools when you want the user to log in using their credentials from a provider such as Google, Facebook, or Twitter. 
+
+To quote Wikipedia:
+
+> A federated identity in information technology is the means of linking a person's electronic identity and attributes, stored across multiple distinct identity management systems.
+
+Remember back on the Mobile Hub screen when I supplied my Facebook App ID and told it that I'd like my app to have Facebook as a log-in option, but for it not to be required? Here's a good example of what the Mobile Hub is *really* doing behind the scenes when you choose this option. If I open Cognito, then click the "Manage Federated Identities" button, note that there is a identity pool there:
+
+-show pic of the new federated identity
+-show how you can rename it b/c name doesn't really matter, except that the mobile hub loses its connection to it (maybe? test this...)
+-show how it allows anonymous access (and this goes away when you make the login mandatory)
+-explain the unauth and auth roles, and show those on the IAM screen
+
+
+Here's another confusing thing. (Show how the "create new" buttons are different on each screen).
 
 (work in progress, not complete yet)
