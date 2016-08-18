@@ -167,7 +167,7 @@ You'll see lots of info about the identity pool. The roles are very important to
 Note how there's a checkmark next to "Enable access to unauthenticated identities". If you switch over to the Mobile Hub and change the sign-in from optional to required and save the change, then return to the identity pool and refresh the page, notice that it removed both the checkmark and the unauthenticated role:
 
 | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/29.png "Change setting") | ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/30.png "Note changes in pool") |
-| --- | --- |
+| :---: | :---: |
 | __When you remove the optional sign-in from the Mobile Hub...__ | __...it removes the unauthenticated sign-in from the identity pool.__ |
 
 -explain the unauth and auth roles, and show those on the IAM screen
