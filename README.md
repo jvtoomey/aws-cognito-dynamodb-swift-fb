@@ -329,10 +329,6 @@ we can see that it has created a new policy that wasn't there before. The "signi
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/50.png "table policy")
 
-Here we see the policy that AWS created for the editing of the table: 
-
-![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/50.png "table policy")
-
 It's instructive to look at the specifics of the policy to get a sense of how you set permissions in AWS. Here's the policy in its entirety:
 
 ~~~~
