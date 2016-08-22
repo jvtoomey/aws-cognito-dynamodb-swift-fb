@@ -295,7 +295,7 @@ Click on the table to the various information about the table. Note that lastNam
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/44.png "DynamoDB Table list")
 
-You can add records (or "items", as they're move precisely called in DynamoDB's terminology) by clicking the Create Item button and typing in values:
+You can add records (or "items", as they're more precisely called in DynamoDB's terminology) by clicking the Create Item button and typing in values:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/45.png "Add item")
 
@@ -303,17 +303,125 @@ The new item appears in the table onscreen:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/46.png "New item")
 
-Here's another of my UI-gripes. You can add additional attributes to an item, and when you view them altogether, it looks just like a traditional relational table with rows and columns:
+Here's another of my UI-gripes. You can add additional attributes to an item, and when you view them altogether, it looks just like a traditional relational table with rows and columns. In this picture, I've added an attribute "hobby" to one of the items, and an attribute "lastName" to another item:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/47.png "Items")
 
-If this were a relational table, those blanks in each record would be nulls in those fields. However, with DynamoDB, those blanks literally don't exist on those items, as you can see when you click on each of them. One item has 2 attributes, one has 3, and another has 3 but the 3rd attribute is different:
+If this were a relational table, those blanks in each record would be nulls in those fields, but each record would have all the fields contained in it. That is to say, the "hobby" field would exist for every record, even if the field contained a null for some of the records, as it does for the first and third in my picture. However, with DynamoDB, the "hobby" attribute literaly doesn't exist on the first and 3rd record. It only exists on the second record. You can see this when you click on each item. One item has 2 attributes, one has 3, and another has 3 but the 3rd attribute is different:
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/48.png "items with attributes")
 
-(Show how a DynamoDB's table permissions seem like they're set on the table, but they're actually set in IAM)
+One thing that can mislead you is when you want to set up permissions on this table. When you're looking at the table's configuration settings, you'll notice a tab named "Access Control." It would seem like you set up permissions for the table here, since they have the tab available. (This is the way SQLServer works for table permissions--you can set up the table's permissions right there in the table's configuration.) Here in AWS, the "Access Control" tab is a strange and pointless UI control. When you choose the options and click the "Create Policy" button, it writes the text of a policy that you must copy/paste into the IAM console. In fact, when you expand the "Attach Policy Instructions" section, it just gives you instructions for copying & pasting into the IAM console! I can see their rationale, that they're trying to make it easier for a novice user who is just learning how to use AWS, but in my opinion it's just confusing. This is the key point to remember:
 
-(Explain how DynamoDB tables aren't like relational db tables that have fixed columns) 
+* You set up permissions for DynamoDB tables in the IAM console, not in DynamoDB.
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/49.png "table permissions")
+
+I want my table to allow anyone to read its records, but only the creator of the records can edit them. Amazon has an article here that gives a good intro to the use of substitution variables in AIM policies:
+
+http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html
+
+For now, though, let's look at how the Mobile Hub has set up the IAM policies for us. Remember that I chose "Protected", which means "Any app user can read, only owner can write to item." When we look at the IAM console and click on the "auth" role (ie, the 2nd one in this list),
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/35.png "roles")
+
+we can see that it has created a new policy that wasn't there before. The "signin" policy was created to control the sign-in action, and now there's a new policy to control the database access. Let's click on "Edit Policy" to see what it contains:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/50.png "table policy")
+
+Here we see the policy that AWS created for the editing of the table: 
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/50.png "table policy")
+
+It's instructive to look at the specifics of the policy to get a sense of how you set permissions in AWS. Here's the policy in its entirety:
+
+~~~~
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:GetItem",
+                "dynamodb:ListTables",
+                "dynamodb:PutItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:us-east-1:000000000000:table/testthisgizmo-mobilehub-3333333353-MyFriends"
+            ],
+            "Condition": {
+                "ForAllValues:StringEquals": {
+                    "dynamodb:LeadingKeys": [
+                        "${cognito-identity.amazonaws.com:sub}"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:GetItem",
+                "dynamodb:ListTables",
+                "dynamodb:Query",
+                "dynamodb:Scan"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:us-east-1:000000000000:table/testthisgizmo-mobilehub-3333333353-MyFriends"
+            ]
+        }
+    ]
+}
+~~~~
+
+Note that the first set of actions allow for "PutItem" and "UpdateItem" which correspond to the "Add" and "Update" events in relational databases. This is allowed for the `cognito-identity.amazonaws.com:sub` value. As discussed in this article,
+
+https://mobile.awsblog.com/post/Tx1OSMBRHZVM9V0/Understanding-Amazon-Cognito-Authentication-Part-3-Roles-and-Policies
+
+> This value is the identity ID for the individual user, not the identifier of their login account (such as an email address)
+
+I believe "LeadingKeys" refers to the hash key of the table, so basically it's saying that if your Cognito identity ID matches the value that's stored in the hash key attribute of the table item, then you have the right to update that record.
+
+The 2nd half of the policy tells us what happens for users whose identity ID doesn't match: They can get items and query the table, but they can't do updates.
+
+If we go back to the Mobile Hub and change the table's permissions from Protected to Public, which means "any app user can read and write to any item", then look at the IAM policy, we can see how it's changed:
+
+~~~~
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:BatchGetItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:GetItem",
+                "dynamodb:ListTables",
+                "dynamodb:Query",
+                "dynamodb:Scan"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:us-east-1:000000000000:table/testthisgizmo-mobilehub-3333333353-MyFriends"
+            ]
+        }
+    ]
+}
+~~~~
+
+Note that there's no Condition anymore that restricts who can write to the table; now it's allowed for everyone.
 
 (Here's another confusing thing :Show how the "create new" buttons are different on each screen)
 
