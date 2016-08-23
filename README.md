@@ -188,7 +188,7 @@ By contrast, if you're going to add a new identity pool, you open the identity p
 
 ![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/54.png "new identity pool")
 
-Note how this one's button is on the left, and uses a gradient, not flat design. Even stranger, though, the entire page is styled differently! Everything from the 3D orange cube to the font size to the format of the subheading is so different that it almost makes you think you're on a different website. It's pretty apparent that some other team designed each one, or perhaps one of a holdover from an old design that they've never gotten around to redesigning. It's an odd and amateurish inconsistency from a company with such massive resources.
+Note how this one's button is on the left, and uses a gradient, not flat design. Even stranger, though, the entire page is styled differently! Everything from the 3D orange cube to the font size to the format of the subheading is so different that it almost makes you think you're on a different website. It's pretty apparent that some other team designed each one, or perhaps one is a holdover from an old design that they've never gotten around to redesigning. It's an odd and amateurish inconsistency from a company with such massive resources.
 
 ## Roles
 
