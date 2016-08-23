@@ -176,6 +176,20 @@ This illustrates how the Mobile Hub provides a more user-friendly way to underst
 | :---: | :---: |
 | __The Facebook App ID set in the Mobile Hub...__ | __...is put here in the identity pool automatically.__ |
 
+I had mentioned earlier that the Cognito interface is confusing, especially with regard to user pools vs identity pools. I just wanted to give a photo example of what I mean. 
+
+Let's say you're going to add a new user pool, so you open the user pool screen and click this button:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/53.png "new user pool")
+
+Note how the button is to the far right, and is stylized in the flat design ethos.
+
+By contrast, if you're going to add a new identity pool, you open the identity pool screen (or "federated identity" screen, as it still can't decide which it is), and click this button:
+
+![alt text](https://github.com/jvtoomey/aws-cognito-dynamodb-swift-fb/raw/master/DocumentationImages/54.png "new identity pool")
+
+Note how this one's button is on the left, and uses a gradient, not flat design. Even stranger, though, the entire page is styled differently! Everything from the 3D orange cube to the font size to the format of the subheading is so different that it almost makes you think you're on a different website. It's pretty apparent that some other team designed each one, or perhaps one of a holdover from an old design that they've never gotten around to redesigning. It's an odd and amateurish inconsistency from a company with such massive resources.
+
 ## Roles
 
 Understanding the "role of roles", so to speak, in AWS is crucial to everything you do, because they control how much access users have. If your roles aren't set up correctly, you can accidentally give users too much access and they can edit someone else's records, or you can prevent users from logging in at all even though you want them to.
