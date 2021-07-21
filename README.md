@@ -432,7 +432,3 @@ If we go back to the Mobile Hub and change the table's permissions from Protecte
 ~~~~
 
 Note that there's no Condition anymore that restricts who can write to the table; now it's allowed for everyone.
-
-(Here's another confusing thing :Show how the "create new" buttons are different on each screen)
-
-(work in progress, not complete yet)
